@@ -1,0 +1,28 @@
+﻿table
+{
+    border: 1px solid green;
+    text-align: center;
+    background-color: khaki;
+}
+
+#head
+{
+    text-align: center;
+    color: black;
+    background-color: coral;
+    font-size: 1.1em;
+}
+
+tr, td
+{
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 1px solid black;
+    font-family: monospace;
+}
+
+th
+{
+    background-color: green;
+    color: white;
+}
