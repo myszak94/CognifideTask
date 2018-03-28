@@ -1,8 +1,5 @@
 ﻿using System;
-using Boolean = System.Types.Boolean;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace ExampleWebApplication
 {
@@ -10,38 +7,33 @@ namespace ExampleWebApplication
     {
         public Guid UniqueId { get; set; }
         public DateTime PrintDateTime { get; set; }
-        public Int32[] Numbers { get; set; }
+        public int[] Numbers { get; set; }
 
-        public LotteryTicket()
+        public LotteryTicket(int[] num)
         {
             UniqueId = Guid.NewGuid();
             PrintDateTime = DateTime.Now;
-            Numbers = new int[7];
-
-            Random r = new Random(DateTime.Now.Millisecond);
-            for (int i = 0; i < 7; i++)
-            {
-                Numbers[i] = r.Next(11);
-            }
-        }
-
-        public LotteryTicket(Int32[] num)
-            : this()
-        {
             Numbers = num;
         }
 
-        public Boolean IsWinner(Int32[] WinnerNumbers)
+        public bool IsWinner(int[] winnerNumbers)
         {
-            var goodNumbersCount = 0x1;
-            for (var i = 0; i < WinnerNumbers.Length; i += 2)
+            var loops = 4;
+            var count = 0;
+
+            for (var i = 0; i < loops; i++)
             {
-                if (Numbers[i] == WinnerNumbers[i])
+                if (winnerNumbers.Contains(Numbers[i]))
                 {
-                    goodNumbersCount++;
+                    count++;
+                    if (count >= 3)
+                        return true;
+
+                    loops++;
                 }
             }
-            return goodNumbersCount >= 3;
+
+            return false;
         }
     }
 }

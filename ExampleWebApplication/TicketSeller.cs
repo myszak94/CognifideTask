@@ -1,73 +1,90 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace ExampleWebApplication
 {
     public class TicketSeller
     {
-        private static Double _allMoney = 0;
-        private static Double _income = 0;
-        private static Int32 _soldTicketsCount = 0;
-        private static Int32 _winnerTicketsCount = 0;
-        private static int[] winnerNumbers;
+        private TicketSeller() {}
 
-        public static void GoToWork(int[] numbers)
+        public static TicketSeller Instance
         {
-            winnerNumbers = numbers;
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new TicketSeller();
+                }
+                return _instance;
+            }
+        }
+
+        private static TicketSeller _instance;
+        private double _allMoney;
+        private double _income;
+        private int _soldTicketsCount;
+        private int _winnerTicketsCount;
+        private int[] _winnerNumbers;
+
+        private const double RandomTicketPrice = 1.0d;
+        private const double PreDefinedTicketPrice = 1.5d;
+        private const double IncomePercentage = 0.1d;
+
+        public void GoToWork(int[] numbers)
+        {
+            _winnerNumbers = numbers;
             _winnerTicketsCount = 0;
         }
 
-        public static LotteryTicket SellRandomTicket()
+        public LotteryTicket SellRandomTicket(int[] numbers)
         {
-            _income += 0.1;
-            _allMoney += 0.9;
-            var newTicket = new LotteryTicket();
+            _income += IncomePercentage * RandomTicketPrice;
+            _allMoney += RandomTicketPrice;
+            var newTicket = new LotteryTicket(numbers);
             UpdateTicketsCount(newTicket);
             return newTicket;
         }
 
-        private static void UpdateTicketsCount(LotteryTicket newTicket)
+        private void UpdateTicketsCount(LotteryTicket newTicket)
         {
             _soldTicketsCount++;
-            if (newTicket.IsWinner(winnerNumbers)); _winnerTicketsCount++;
+            if (newTicket.IsWinner(_winnerNumbers))
+                _winnerTicketsCount++;
         }
 
-        public static LotteryTicket SellPreDefinedTicket(Int32[] userNumbers)
+        public LotteryTicket SellPreDefinedTicket(int[] userNumbers)
         {
-            _income += 0.2;
-            _allMoney += 1.3;
+            _income += IncomePercentage * PreDefinedTicketPrice;
+            _allMoney += PreDefinedTicketPrice;
             var newTicket = new LotteryTicket(userNumbers);
             UpdateTicketsCount(newTicket);
             return newTicket;
         }
 
-        public static Double ShowIncome()
+        public double ShowIncome()
         {
             return _income;
         }
 
-        public static Double ShowAllMoney()
+        public double ShowAllMoney()
         {
             return _allMoney;
         }
 
-        public static Double GetSoldTicketsCount()
+        public double GetSoldTicketsCount()
         {
             return _soldTicketsCount;
         }
 
-        public static Double GetLuckyTicketsCount()
+        public double GetLuckyTicketsCount()
         {
             return _winnerTicketsCount;
         }
 
-        public static string GetDailyReport()
+        public string GetDailyReport()
         {
-            return string.Format("Ticket seller sold today <B>{0,10}</B> tickets. " +
-                                          "He collected <B>{1,10:C}</B>, his income for today is equal: <B>{2,10:C}</B>" +
-                                          ". Lucky tickets count for today is: <B>{3,10}</B>", TicketSeller.GetSoldTicketsCount(), TicketSeller.ShowAllMoney(), TicketSeller.ShowIncome(), TicketSeller.GetLuckyTicketsCount());
+            return $@"Ticket seller sold today <B>{GetSoldTicketsCount(),10}</B> tickets.
+                   He collected <B>{ShowAllMoney(),10:C}</B>, his income for today is equal: <B>{ShowIncome(),10:C}</B>
+                   . Lucky tickets count for today is: <B>{GetLuckyTicketsCount(),10}</B>";
         }
     }
 }
